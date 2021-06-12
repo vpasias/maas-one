@@ -33,6 +33,7 @@ packages:
    - jq
 
 runcmd:
+  - apt-get install qemu-kvm libvirt-daemon-system libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-top -y
   - snap install maas-test-db
   - snap install maas --channel=2.9/stable
   - maas init region+rack --maas-url http://10.0.0.2:5240/MAAS --database-uri maas-test-db:///
