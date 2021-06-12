@@ -71,7 +71,7 @@ SSH to the KVM host with agent forwarding enabled. Forward your usual personal
 keys.
 
     ssh -A <kvm-host>
-    git clone https://github.com/pmatulis/maas-one
+    git clone https://github.com/vpasias/maas-one
 
 ## Install the software
 
