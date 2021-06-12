@@ -6,8 +6,8 @@ POOL=images  # Remove 'pool' option below if not using a libvirt storage pool.
 # The Juju controller
 
 VCPUS=2
-RAM_SIZE_MB=4000
-DISK_SIZE_GB_1=30
+RAM_SIZE_MB=8192
+DISK_SIZE_GB_1=40
 NAME=controller
 MAC1="52:54:00:02:01:01"
 
@@ -25,13 +25,13 @@ virt-install \
 
 # The usable MAAS nodes
 
-VCPUS=9
-RAM_SIZE_MB=62000
-DISK_SIZE_GB_1=120
+VCPUS=8
+RAM_SIZE_MB=32768
+DISK_SIZE_GB_1=300
 DISK_SIZE_GB_2=30
 DISK_SIZE_GB_3=30
 
-for NAME in node1 node2 node3 node4; do
+for NAME in node1 node2 node3 node4 node5; do
 
         case $NAME in
         node1)
@@ -49,6 +49,9 @@ for NAME in node1 node2 node3 node4; do
         node4)
           MAC1="52:54:00:03:04:01"
           MAC2="52:54:00:03:04:02"
+        node5)
+          MAC1="52:54:00:03:05:01"
+          MAC2="52:54:00:03:05:02"          
           ;;
         esac
 
