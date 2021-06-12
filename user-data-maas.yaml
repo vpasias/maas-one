@@ -36,12 +36,10 @@ runcmd:
   - snap install maas-test-db
   - snap install maas --channel=2.9/stable
   - maas init region+rack --maas-url http://10.0.0.2:5240/MAAS --database-uri maas-test-db:///
-  - maas createadmin --username admin --password ubuntu --email admin@example.com --ssh-import lp:vpasias
+  - maas createadmin --username admin --password ubuntu --email admin@example.com
   - maas apikey --username admin > ~ubuntu/admin-api-key
   - mkdir -p /var/snap/maas/current/root/.ssh
   - ssh-keygen -q -N '' -f /var/snap/maas/current/root/.ssh/id_rsa
-  - ssh-import-id lp:vpasias
-  - su - ubuntu -c "ssh-import-id lp:vpasias"
 
 power_state:
   mode: reboot
