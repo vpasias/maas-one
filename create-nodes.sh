@@ -49,6 +49,7 @@ for NAME in node1 node2 node3 node4 node5; do
         node4)
           MAC1="52:54:00:03:04:01"
           MAC2="52:54:00:03:04:02"
+          ;;
         node5)
           MAC1="52:54:00:03:05:01"
           MAC2="52:54:00:03:05:02"          
