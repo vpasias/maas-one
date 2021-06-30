@@ -135,6 +135,7 @@ git clone https://github.com/vpasias/maas-one.git && cd maas-one
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost uname -a
 
+# Copy locally the admin-api-key file located at directory: /home/ubuntu
 scp -o "StrictHostKeyChecking=no" ubuntu@maashost:admin-api-key ~
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost
