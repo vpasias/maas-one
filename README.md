@@ -70,20 +70,7 @@ So deployed nodes will use:
 SSH to the KVM host with agent forwarding enabled. Forward your usual personal
 keys.
 
-    ssh -A <kvm-host>
     git clone https://github.com/vpasias/maas-one
-
-## Install the software
-
-> **Important**: The Ubuntu release & architecture that you want to use for the
-  MAAS host must correspond to this line in `install-software.sh`:
-  `sudo uvt-simplestreams-libvirt sync release=<XXX> arch=<XXX>`.
-  The release will be stated in step 'Create the MAAS host and server'.
-
-Install the software on the KVM host:
-
-    cd ~/maas-one
-    ./install-software.sh
 
 ## Set up the environment
 
