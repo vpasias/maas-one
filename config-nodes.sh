@@ -3,7 +3,7 @@
 #set -e                                                                                                                                 
                                                                                                                                         
 PROFILE=admin
-KVM_INTERNAL_IP=10.0.0.1
+KVM_INTERNAL_IP=10.0.0.2
 
 declare -A nodeNamesMACs=( \
         [node1]=52:54:00:03:01:01 \
