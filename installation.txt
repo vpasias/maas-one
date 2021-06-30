@@ -17,9 +17,7 @@ sudo -i
 cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
 mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
 wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20200813.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
-cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm
-
-sudo apt install snapd -y && sudo snap install juju --classic
+cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm && sudo apt install snapd -y && sudo snap install juju --classic
 
 ###########################################################################################################################################################################################
 ################################## MAAS One (https://github.com/vpasias/maas-one) ###############################################
