@@ -18,11 +18,11 @@ https://docs.openstack.org/project-deploy-guide/charm-deployment-guide/latest/in
 
 ## Base client requirements
 
-    ssh-keygen -q -N '' -f ~/.ssh/admin-key
+    ssh-keygen -q -N '' -f /mnt/extra/.ssh/admin-key
     sudo snap install openstackclients --classic
-    curl http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img --output ~/focal-amd64.img
-    git clone https://github.com/openstack-charmers/openstack-bundles ~/openstack-bundles
-    source ~/openstack-bundles/stable/openstack-base/openrc
+    curl http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img --output /mnt/extra/virt/images/focal-amd64.img
+    git clone https://github.com/openstack-charmers/openstack-bundles /mnt/extra/openstack-bundles
+    source /mnt/extra/openstack-bundles/stable/openstack-base/openrc
 
 ## OpenStack networking (and image)
 
@@ -39,7 +39,7 @@ https://docs.openstack.org/project-deploy-guide/charm-deployment-guide/latest/in
 
 ### One-time setup
 
-    openstack keypair create --public-key ~/.ssh/admin-key.pub admin-key
+    openstack keypair create --public-key /mnt/extra/.ssh/admin-key.pub admin-key
 
     for i in $(openstack security group list | awk '/default/{ print $2 }'); do
         openstack security group rule create $i --protocol icmp --remote-ip 0.0.0.0/0;
@@ -64,4 +64,4 @@ This is recommended prior to attempting an SSH connection:
 
 Connect:
 
-    ssh -i ~/.ssh/admin-key ubuntu@$FLOATING_IP
+    ssh -i /mnt/extra/.ssh/admin-key ubuntu@$FLOATING_IP
