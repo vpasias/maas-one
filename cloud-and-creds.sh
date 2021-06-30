@@ -28,5 +28,5 @@ if juju clouds 2>/dev/null | grep $CLOUD_NAME; then
            juju remove-cloud $CLOUD_NAME
 fi
 
-juju add-cloud --client $CLOUD_NAME $CLOUD_YAML
+juju add-cloud --client -f $CLOUD_YAML $CLOUD_NAME
 juju add-credential --client -f $CREDS_YAML $CLOUD_NAME
