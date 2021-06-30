@@ -26,7 +26,7 @@ https://docs.openstack.org/project-deploy-guide/charm-deployment-guide/latest/in
 
 ## OpenStack networking (and image)
 
-    openstack image create --public --container-format bare --disk-format raw --property architecture=x86_64 --property hw_disk_bus=virtio --property hw_vif_model=virtio --file ~/focal-amd64.img focal-amd64
+    openstack image create --public --container-format bare --disk-format raw --property architecture=x86_64 --property hw_disk_bus=virtio --property hw_vif_model=virtio --file /mnt/extra/focal-amd64.img focal-amd64
     openstack network create ext_net --external --share --default --provider-network-type flat --provider-physical-network physnet1
     openstack subnet create ext_subnet --allocation-pool start=10.0.0.40,end=10.0.0.99 --subnet-range 10.0.0.0/24 --no-dhcp --gateway 10.0.0.1 --network ext_net
     openstack network create int_net --internal
