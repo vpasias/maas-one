@@ -67,4 +67,4 @@ So deployed nodes will use:
 
 ## Set up the environment
 
-Follow the instructions in the file: installation.md
+Follow the instructions in the file: installation.txt
