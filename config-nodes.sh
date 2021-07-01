@@ -21,11 +21,11 @@ for i in "${!nodeNamesMACs[@]}"; do
         echo -e "\nConfiguring node $i"
         MAC1=${nodeNamesMACs[$i]}
         SYSTEM_ID=$(maas $PROFILE machines read mac_address=$MAC1 | grep -i system_id -m 1 | cut -d '"' -f 4)
-        maas $PROFILE machine update $SYSTEM_ID \
+        maas $PROFILE machines create \
                 hostname=$i \
+                mac_addresses=$MAC1 \
                 power_type=virsh \
-                power_parameters_power_address=qemu+ssh://ubuntu@"$KVM_INTERNAL_IP"/system \
-                power_parameters_power_id=$i >/dev/null && echo "- Node name changed and power type configured"
+                power_parameters='{"power_address": "qemu+ssh://'ubuntu'@'10.0.0.2'/system", "power_id": "node'$i'"}' && echo "- Node created and power type configured"
         maas $PROFILE machine commission $SYSTEM_ID testing_scripts=none >/dev/null && echo "- Node commissioning (hardware tests skipped)"
 
         # Node 'controller' is the Juju controller, apply tag 'juju'
