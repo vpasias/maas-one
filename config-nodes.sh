@@ -23,6 +23,7 @@ for i in "${!nodeNamesMACs[@]}"; do
         SYSTEM_ID=$(maas $PROFILE machines read mac_address=$MAC1 | grep -i system_id -m 1 | cut -d '"' -f 4)
         maas $PROFILE machines create \
                 hostname=$i \
+                architecture="amd64/generic" \
                 mac_addresses=$MAC1 \
                 power_type=virsh \
                 power_parameters='{"power_address": "qemu+ssh://'ubuntu'@'10.0.0.2'/system", "power_id": "node'$i'"}' && echo "- Node created and power type configured"
