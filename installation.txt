@@ -31,38 +31,38 @@ nano vm_deployment.sh
 virsh net-destroy default && virsh net-undefine default
 
 cat > /mnt/extra/net-external.xml <<EOF
-<network>                                                                       
-  <name>external</name>                                                         
-  <uuid>790274ec-2590-4854-b432-ea7d22deb667</uuid>                             
-  <forward mode='nat'>                                                          
-    <nat>                                                                       
-      <port start='1024' end='65535'/>                                          
-    </nat>                                                                      
-  </forward>                                                                    
-  <bridge name='virbr0' stp='on' delay='0'/>                                    
-  <mac address='52:54:00:c9:86:40'/>                                            
-  <ip address='192.168.122.1' netmask='255.255.255.0'>                          
-    <dhcp>                                                                      
-      <range start='192.168.122.2' end='192.168.122.254'/>                      
-      <host mac='52:54:00:01:01:01' ip='192.168.122.2' />                       
-    </dhcp>                                                                     
-  </ip>                                                                         
-</network> 
+<network>
+  <name>external</name>
+  <uuid>790274ec-2590-4854-b432-ea7d22deb667</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:c9:86:40'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>                          
+      <range start='192.168.122.2' end='192.168.122.254'/>
+      <host mac='52:54:00:01:01:01' ip='192.168.122.2' />
+    </dhcp>
+  </ip>
+</network>
 EOF
 
 cat > /mnt/extra/net-internal.xml <<EOF
-<network>                                                                       
-  <name>internal</name>                                                         
-  <uuid>790274ec-2590-4854-b432-ea7d22deb668</uuid>                             
-  <forward mode='nat'>                                                          
-    <nat>                                                                       
-      <port start='1024' end='65535'/>                                          
-    </nat>                                                                      
-  </forward>                                                                    
-  <bridge name='virbr1' stp='on' delay='0'/>                                    
-  <mac address='52:54:00:c9:86:41'/>                                            
-  <ip address='10.0.0.1' netmask='255.255.255.0'>                               
-  </ip>                                                                         
+<network>
+  <name>internal</name>
+  <uuid>790274ec-2590-4854-b432-ea7d22deb668</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:c9:86:41'/>
+  <ip address='10.0.0.1' netmask='255.255.255.0'>
+  </ip>
 </network>
 EOF
 
@@ -81,9 +81,9 @@ sleep 90
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "uname -a && sudo ip a"
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost 'echo "root:gprm8350" | sudo chpasswd'
-ssh -o "StrictHostKeyChecking=no" ubuntu@maashost 'echo "ubuntu:kyax7344" | sudo chpasswd' 
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost 'echo "ubuntu:kyax7344" | sudo chpasswd'
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"
-ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config" 
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo systemctl restart sshd"
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo rm -rf /root/.ssh/authorized_keys"
 
@@ -116,7 +116,7 @@ EOF"
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo apt update -y && sudo apt upgrade -y && sudo apt install vim git wget net-tools locate jq -y"
 
-ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-top -y"
+#ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-top -y"
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo snap install maas-test-db"
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo snap install maas --channel=2.9/stable"
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo maas init region+rack --maas-url http://10.0.0.2:5240/MAAS --database-uri maas-test-db:///"
@@ -131,28 +131,28 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo reboot"
 
 chmod +x vm_deployment.sh && ./vm_deployment.sh
 
-git clone https://github.com/vpasias/maas-one.git && cd maas-one
+cd .. && git clone https://github.com/vpasias/maas-one.git && cd maas-one
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost uname -a
 
 # Copy locally the admin-api-key file located at directory: /home/ubuntu
-scp -o "StrictHostKeyChecking=no" ubuntu@maashost:admin-api-key ~
+scp -o "StrictHostKeyChecking=no" ubuntu@maashost:admin-api-key /mnt/extra/maas-one
+
+# ls -lah /root/.ssh && sudo chmod 644 /root/.ssh/authorized_keys
+sshpass -p gprm8350 ssh -o "StrictHostKeyChecking=no" root@maashost cat /var/snap/maas/current/root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+# sshpass -p gprm8350 ssh -o "StrictHostKeyChecking=no" root@maashost cat /var/snap/maas/current/root/.ssh/id_rsa.pub | sudo tee -a /root/.ssh/authorized_keys
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost
 cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && ip a && lsblk
-# sudo systemctl status libvirtd
-sudo -i
-cat /var/snap/maas/current/root/.ssh/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys
-exit
 sudo snap run --shell maas
-virsh -c qemu+ssh://ubuntu@10.0.0.2/system list --all
+virsh -c qemu+ssh://root@10.0.0.1/system list --all
 exit
 exit
 
 scp -o "StrictHostKeyChecking=no" config-maas.sh config-nodes.sh maas-login.sh ubuntu@maashost:
 
 nc -vz 10.0.0.2 5240
-#Connection to 10.0.0.2 5240 port [tcp/*] succeeded!
+#Result: Connection to 10.0.0.2 5240 port [tcp/*] succeeded!
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-maas.sh
 
@@ -160,11 +160,12 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-maas.sh
 # URL: http://localhost:5240/MAAS/
 
 # Upload local key to maas
-cat ~/.ssh/id_rsa.pub
+# cat ~/.ssh/id_rsa.pub
 
 ./create-nodes.sh
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
+# check machine status from maas ui
 
 ./cloud-and-creds.sh
 
@@ -723,11 +724,13 @@ juju machines
 juju status
 
 # Delete controller and model
+# juju remove-cloud maas-one
+# juju destroy-model maas-one -y
 juju destroy-controller maas-one -y --destroy-all-models
 juju kill-controller -y maas-one
 
 # Delete all quests
-./remove-guests.sh && cd && rm -rf maas-one
+./remove-guests.sh && cd .. && rm -rf maas-one
 
 #################### Delete maashost ##########################################################################################
 
