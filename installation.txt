@@ -162,6 +162,8 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-maas.sh
 # Upload local key to maas
 # cat ~/.ssh/id_rsa.pub
 
+#################### Deploy nodes ##########################################################################################
+
 ./create-nodes.sh
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
@@ -171,11 +173,13 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
 
 juju clouds --client && juju credentials --client --show-secrets --format yaml
 
-juju bootstrap --bootstrap-series=focal --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=focal openstack && cd bundles
+#################### Deploy IaaS ##########################################################################################
+
+juju bootstrap --bootstrap-series=focal --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=focal openstack
 
 juju controllers && juju status && juju machines
 
-juju deploy ./tfhabundle.yaml --map-machines=existing
+cd bundles/ && juju deploy ./tfhabundle.yaml --map-machines=existing
 juju machines
 juju status
 
