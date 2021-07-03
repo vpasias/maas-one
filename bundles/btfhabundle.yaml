@@ -54,7 +54,7 @@ applications:
     options:
       debug: true
       openstack-origin: cloud:bionic-ussuri
-      vip: 192.168.51.203
+      vip: 10.0.0.103
     constraints: arch=amd64
   hacluster-glance:
     charm: cs:hacluster-74
@@ -103,14 +103,14 @@ applications:
     options:
       debug: true
       openstack-origin: cloud:bionic-ussuri
-      vip: 192.168.51.202
+      vip: 10.0.0.102
     constraints: arch=amd64
   keepalived:
     charm: cs:~containers/keepalived-64
     channel: stable
     options:
       port: 10000
-      virtual_ip: 192.168.51.201
+      virtual_ip: 10.0.0.101
   keystone:
     charm: cs:keystone-321
     channel: stable
@@ -126,7 +126,7 @@ applications:
       debug: true
       openstack-origin: cloud:bionic-ussuri
       preferred-api-version: 3
-      vip: 192.168.51.204
+      vip: 10.0.0.104
     constraints: arch=amd64
   memcached:
     charm: cs:memcached-32
@@ -151,7 +151,7 @@ applications:
       max-connections: 1500
       min-cluster-size: 3
       root-password: password
-      vip: 192.168.51.205
+      vip: 10.0.0.105
     constraints: arch=amd64
   neutron-api:
     charm: cs:neutron-api-292
@@ -167,7 +167,7 @@ applications:
       manage-neutron-plugin-legacy-mode: false
       neutron-security-groups: true
       openstack-origin: cloud:bionic-ussuri
-      vip: 192.168.51.206
+      vip: 10.0.0.106
     constraints: arch=amd64
   nova-cloud-controller:
     charm: cs:nova-cloud-controller-350
@@ -184,7 +184,7 @@ applications:
       debug: true
       network-manager: Neutron
       openstack-origin: cloud:bionic-ussuri
-      vip: 192.168.51.207
+      vip: 10.0.0.107
     constraints: arch=amd64
   nova-compute:
     charm: cs:nova-compute-325
@@ -227,7 +227,7 @@ applications:
     options:
       debug: true
       openstack-origin: cloud:bionic-ussuri
-      vip: 192.168.51.208
+      vip: 10.0.0.108
     constraints: arch=amd64
   rabbitmq-server:
     charm: cs:rabbitmq-server-108
@@ -256,7 +256,7 @@ applications:
     - "2"
     expose: true
     options:
-      control-network: 192.168.51.0/24
+      control-network: 10.0.0.0/24
       docker-registry: hub.juniper.net/contrail-nightly
       image-tag: master-latest
       log-level: SYS_DEBUG
@@ -273,7 +273,7 @@ applications:
     options:
       cassandra-jvm-extra-opts: -Xms16g -Xmx16g
       cassandra-minimum-diskgb: "4"
-      control-network: 192.168.51.0/24
+      control-network: 10.0.0.0/24
       docker-registry: hub.juniper.net/contrail-nightly
       image-tag: master-latest
       log-level: SYS_DEBUG
@@ -290,7 +290,7 @@ applications:
       docker-registry: hub.juniper.net/contrail-nightly
       haproxy-https-mode: tcp
       image-tag: master-latest
-      vip: 192.168.51.201
+      vip: 10.0.0.101
     constraints: arch=amd64
   tf-controller:
     charm: cs:~juniper-os-software/contrail-controller-0
@@ -304,13 +304,13 @@ applications:
       auth-mode: rbac
       cassandra-jvm-extra-opts: -Xms16g -Xmx16g
       cassandra-minimum-diskgb: "4"
-      control-network: 192.168.51.0/24
-      data-network: 10.0.0.0/16
+      control-network: 10.0.0.0/24
+      data-network: 172.16.0.0/16
       docker-registry: hub.juniper.net/contrail-nightly
       image-tag: master-latest
       log-level: SYS_DEBUG
       min-cluster-size: 3
-      vip: 192.168.51.201
+      vip: 10.0.0.101
     constraints: arch=amd64
   tf-keystone-auth:
     charm: cs:~juniper-os-software/contrail-keystone-auth-0
