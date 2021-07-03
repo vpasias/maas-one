@@ -168,12 +168,15 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-maas.sh
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
 # check machine status from maas ui
+# Inside the maas host: maas admin nodes read
+# Also: maas admin machines read | jq '.[] | .hostname, .system_id'
+# maas admin machine update $SYSTEM_ID hostname=node1 power_type=virsh power_parameters_power_address=qemu+ssh://root@10.0.0.1/system power_parameters_power_id=node1 >/dev/null
+
+#################### Deploy IaaS ##########################################################################################
 
 ./cloud-and-creds.sh
 
 juju clouds --client && juju credentials --client --show-secrets --format yaml
-
-#################### Deploy IaaS ##########################################################################################
 
 juju bootstrap --bootstrap-series=focal --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=focal openstack
 
