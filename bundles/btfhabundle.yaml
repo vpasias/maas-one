@@ -294,7 +294,6 @@ applications:
       haproxy-https-mode: tcp
       docker-registry-insecure: true
       image-tag: latest
-      vip: 10.0.0.101
     constraints: arch=amd64
   tf-controller:
     charm: cs:~juniper-os-software/contrail-controller
