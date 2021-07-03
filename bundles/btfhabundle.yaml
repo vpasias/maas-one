@@ -390,7 +390,6 @@ relations:
 - [ tf-controller:http-services, haproxy:reverseproxy ]
 - [ tf-controller:https-services, haproxy:reverseproxy ]
 - [ tf-analytics:http-services, haproxy:reverseproxy ]
-- [ tf-command:https-services, haproxy:reverseproxy ]
 
 # contrail-openstack
 - [ tf-keystone-auth:identity-admin, keystone:identity-admin ]
