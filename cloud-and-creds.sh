@@ -5,7 +5,7 @@ CLOUD_YAML=~/cloud.yaml
 CREDS_YAML=~/credentials.yaml
 CLOUD_NAME=maas-one
 CREDS_NAME=maas-one
-API_KEY=$(cat ~/admin-api-key)
+API_KEY=$(cat /mnt/extra/maas-one/admin-api-key)
 
 cat > $CLOUD_YAML << HERE
 clouds:
