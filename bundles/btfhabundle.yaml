@@ -291,7 +291,6 @@ applications:
     - "2"
     options:
       docker-registry: tungstenfabric
-      haproxy-https-mode: tcp
       docker-registry-insecure: true
       image-tag: latest
     constraints: arch=amd64
