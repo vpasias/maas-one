@@ -6,7 +6,7 @@ OS_VARIANT=ubuntu20.04
 # The Juju controller
 
 VCPUS=2
-RAM_SIZE_MB=8192
+RAM_SIZE_MB=4096
 DISK_SIZE_GB_1=40
 NAME=controller
 MAC1="52:54:00:02:01:01"
