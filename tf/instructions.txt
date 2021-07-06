@@ -7,5 +7,11 @@ export MAAS_API_KEY="$(cat /mnt/extra/maas-one/admin-api-key)"
 export VIRTUAL_IPS="10.0.0.101 10.0.0.102 10.0.0.103 10.0.0.104 10.0.0.105 10.0.0.106 10.0.0.107"
 
 git clone http://github.com/tungstenfabric/tf-devstack
-# Edit file: files/bundle_openstack_maas_ha.yaml.tmpl
+
+# Edit file: juju/files/bundle_openstack_maas_ha.yaml.tmpl & file: juju/files/bundle_tf.yaml.tmpl
+sed -i 's/sdb/vdb/' juju/files/bundle_openstack_maas_ha.yaml.tmpl && sed -i 's/mem=15G/mem=32G/' juju/files/bundle_openstack_maas_ha.yaml.tmpl && \
+sed -i 's/cores=2/cores=8/' juju/files/bundle_openstack_maas_ha.yaml.tmpl && sed -i 's/root-disk=100G/root-disk=300G/' juju/files/bundle_openstack_maas_ha.yaml.tmpl && \ 
+sed -i 's/mem=15G/mem=32G/' juju/files/bundle_tf.yaml.tmpl && \
+sed -i 's/cores=2/cores=8/' juju/files/bundle_tf.yaml.tmpl && sed -i 's/root-disk=60G/root-disk=300G/' juju/files/bundle_tf.yaml.tmpl
+
 tf-devstack/juju/run.sh
