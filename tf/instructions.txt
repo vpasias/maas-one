@@ -1,4 +1,4 @@
-### Execute before the 'Deploy IaaS' part ###
+### Execute just after the: "Deploy nodes' and before the: 'Deploy IaaS' part ###
 export ORCHESTRATOR='openstack'
 export CLOUD='maas'
 export MAAS_ENDPOINT="http://10.0.0.2:5240/MAAS"
