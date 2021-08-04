@@ -1,0 +1,3 @@
+ceph-osd:
+  osd-devices: /dev/vdb
+  source: cloud:bionic-stein
