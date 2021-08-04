@@ -291,6 +291,9 @@ ping -c 4 10.0.0.104
 source ~/admin-openrc
 openstack image list
 
+# Deploy cinder
+...
+
 #juju machines
 #juju status
 juju status --color | more
