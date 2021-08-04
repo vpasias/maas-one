@@ -1,7 +1,6 @@
 #!/bin/sh -e
 
-OS_VARIANT=ubuntu18.04
-#OS_VARIANT=ubuntu20.04
+OS_VARIANT=ubuntu20.04
 #POOL=images  # Remove 'pool' option below if not using a libvirt storage pool.
 
 # The Juju controller
