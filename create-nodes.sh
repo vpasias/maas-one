@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
-OS_VARIANT=ubuntu20.04
+OS_VARIANT=ubuntu18.04
+#OS_VARIANT=ubuntu20.04
 #POOL=images  # Remove 'pool' option below if not using a libvirt storage pool.
 
 # The Juju controller
@@ -25,9 +26,9 @@ virt-install \
 
 # The usable MAAS nodes
 
-VCPUS=8
-RAM_SIZE_MB=32768
-DISK_SIZE_GB_1=300
+VCPUS=4
+RAM_SIZE_MB=24576
+DISK_SIZE_GB_1=120
 DISK_SIZE_GB_2=30
 DISK_SIZE_GB_3=30
 
@@ -54,6 +55,34 @@ for NAME in node1 node2 node3 node4 node5; do
           MAC1="52:54:00:03:05:01"
           MAC2="52:54:00:03:05:02"          
           ;;
+        node6)
+          MAC1="52:54:00:03:06:01"
+          MAC2="52:54:00:03:06:02"
+          ;;
+        node7)
+          MAC1="52:54:00:03:07:01"
+          MAC2="52:54:00:03:07:02"
+          ;;
+        node8)
+          MAC1="52:54:00:03:08:01"
+          MAC2="52:54:00:03:08:02"
+          ;;
+        node9)
+          MAC1="52:54:00:03:09:01"
+          MAC2="52:54:00:03:09:02"
+          ;;
+        node10)
+          MAC1="52:54:00:03:0A:01"
+          MAC2="52:54:00:03:0A:02"          
+          ;;
+        node11)
+          MAC1="52:54:00:03:0B:01"
+          MAC2="52:54:00:03:0B:02"
+          ;;
+        node12)
+          MAC1="52:54:00:03:0C:01"
+          MAC2="52:54:00:03:0C:02"          
+          ;;            
         esac
 
         virt-install \
