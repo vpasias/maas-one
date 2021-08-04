@@ -1,0 +1,5 @@
+glance:
+  openstack-origin: cloud:bionic-stein
+  vip: 10.0.0.104
+glance-hacluster:
+  corosync_transport: unicast
