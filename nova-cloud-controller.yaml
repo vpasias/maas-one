@@ -1,8 +1,0 @@
-nova-cloud-controller:
-  console-access-protocol: spice
-  console-proxy-ip: 10.0.0.106
-  network-manager: Neutron
-  openstack-origin: cloud:bionic-stein
-  vip: 10.0.0.106
-ncc-hacluster:
-  corosync_transport: unicast
