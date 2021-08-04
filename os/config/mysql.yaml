@@ -1,0 +1,10 @@
+mysql:
+  max-connections: 20000
+  min-cluster-size: 3
+  innodb-buffer-pool-size: 512M
+  performance-schema: true
+  root-password: password
+  source: cloud:bionic-stein
+  vip: 10.0.14.130
+mysql-hacluster:
+  corosync_transport: unicast
