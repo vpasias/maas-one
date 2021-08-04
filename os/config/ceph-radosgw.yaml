@@ -1,0 +1,6 @@
+ceph-radosgw:
+  source: cloud:bionic-stein
+  namespace-tenants: true
+  vip: 10.0.0.103
+ceph-radosgw-hacluster:
+  corosync_transport: unicast
