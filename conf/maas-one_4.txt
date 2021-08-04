@@ -192,6 +192,7 @@ juju controllers && juju status && juju machines
 
 # Deploy Full HA Charmed OpenStack with Ubuntu 18.04 Bionic
 # https://pg1x.com/tech:cloud:openstack:stein:deploy-charmed-openstack-ha-bionic:deploy-charmed-openstack-ha-bionic
+# https://gitlab.pg1x.com/openstack/openstack-lab
 # Machine 0: controller1
 # Machine 1: controller2
 # Machine 2: controller3
