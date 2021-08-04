@@ -6,10 +6,10 @@ Environment summary:
 
 * 1 powerful host (the "KVM host") running Ubuntu 18.04 LTS or Ubuntu 20.04 LTS
 
-* 6 KVM guests residing on the KVM host:
+* KVM guests residing on the KVM host:
      * 1 for the MAAS host itself
      * 1 for the Juju controller
-     * 4 for the MAAS nodes (available for deployments)
+     * 4-12 for the MAAS nodes (available for deployments)
 
 * 2 libvirt networks:
      * 'external' for the external side of the MAAS host
