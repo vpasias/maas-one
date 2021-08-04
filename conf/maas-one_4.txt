@@ -17,7 +17,7 @@ sudo -i
 cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
 mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
 wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20210621.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
-cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm && sudo apt install snapd -y && sudo snap install juju --classic
+cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm && sudo apt install snapd python3-venv -y && sudo snap install juju --classic
 
 ###########################################################################################################################################################################################
 ################################## MAAS One (https://github.com/vpasias/maas-one) ###############################################
@@ -165,8 +165,9 @@ cat ~/.ssh/id_rsa.pub
 #################### Deploy nodes ##########################################################################################
 
 ./create-nodes.sh
+
 # Change to ubuntu 18.04 if required
-# sed -i 's/ubuntu20.04/ubuntu18.04/' create-nodes.sh
+sed -i 's/ubuntu20.04/ubuntu18.04/' create-nodes.sh
 # virsh list --all
 
 ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
@@ -182,11 +183,6 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
 #juju update-credential maas-one maas-one -f /mnt/extra/maas-one/credentials.yaml
 
 juju clouds --client && juju credentials --client --show-secrets --format yaml
-
-# For ubuntu 18.04 deployment
-juju bootstrap --bootstrap-series=bionic --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=bionic openstack
-# For ubuntu 20.04 deployment
-# juju bootstrap --bootstrap-series=focal --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=focal openstack
 
 juju controllers && juju status && juju machines
 
@@ -207,16 +203,26 @@ juju controllers && juju status && juju machines
 # Machine 11: ceph-backup3
 # VIP range: 10.0.0.100 - 10.0.0.119
 
+source venv/bin/activate
+python -V
+pip install wheel
+pip install python-openstackclient
+pip install python-swiftclient
+pip freeze >requirements.txt
+openstack --version
+deactivate
+
 cd /mnt/extra/maas-one/os
+
+# Create Juju Bootstrap Controller
+bash 00200-create-juju-bootstrap-controller.sh
 
 # Add machines
 bash 00300-add-machines.sh
-
 juju status && juju machines
 
 # Deploy Ceph OSD
 bash 00400-deploy-ceph-osd.sh
-
 juju status “ceph*”
 
 # Deploy Ceph OSD Backup
@@ -231,11 +237,11 @@ juju status "ceph*"
 bash 00550-deploy-ceph-mon-backup.sh
 juju status "ceph*backup"
 
-# Deploy rabbitmq-server
+# Deploy Rabbitmq-server
 bash 00700-deploy-rabbitmq-server.sh
 juju status "rabbitmq-server"
 
-# Deploy memcached
+# Deploy Memcached
 bash 00800-deploy-memcached.sh
 juju status "memcached"
 juju ssh memcached/0
@@ -253,7 +259,7 @@ show databases;
 select user, host, plugin from mysql.user;
 quit
 
-# Deploy keystone
+# Deploy Keystone
 bash 01000-deploy-keystone.sh
 juju status "keystone"
 juju ssh keystone/0 sudo crm status
@@ -264,12 +270,19 @@ juju ssh mysql/0 mysql -u root -p"password"
 SHOW DATABASES;
 SHOW TABLES FROM keystone;
 quit
-source ~/admin-openrc
+mkdir -p ~/.config/openstack
+ln -sf ~/clouds.yaml ~/.config/openstack/clouds.yaml
+ll ~/.config/openstack/clouds.yaml
+source ~/venv/bin/activate
+#source ~/admin-openrc
 openstack --os-cloud default token issue
 alias openstack="openstack --os-cloud default"
 openstack token issue
+swift stat
+openstack container list
+deactivate
 
-# Deploy ceph-radosgw
+# Deploy Ceph-radosgw
 bash 01050-deploy-ceph-radosgw.sh
 juju status "ceph*"
 juju ssh ceph-mon/0 sudo ceph status
@@ -282,7 +295,7 @@ source ~/admin-openrc
 swift stat
 openstack container create container1
 
-# Deploy glance (Image Service)
+# Deploy Glance (Image Service)
 bash 01100-deploy-glance.sh
 juju status "glance"
 juju ssh glance/0 sudo crm status
@@ -292,7 +305,7 @@ ping -c 4 10.0.0.104
 source ~/admin-openrc
 openstack image list
 
-# Deploy cinder
+# Deploy Cinder
 bash 01200-deploy-cinder.sh
 juju status "cinder*"
 juju ssh cinder/0 sudo crm status
@@ -302,7 +315,7 @@ ping -c 4 10.0.0.105
 source ~/admin-openrc
 openstack volume service list
 
-# Deploy cinder-backup
+# Deploy Cinder-backup
 bash 01250-deploy-cinder-backup.sh
 juju status "cinder*" "ceph-osd-backup" "ceph-mon-backup"
 source ~/admin-openrc
@@ -310,11 +323,11 @@ openstack volume service list
 juju ssh ceph-mon-backup/0 sudo ceph status
 juju ssh ceph-mon-backup/0 sudo ceph osd status
 
-# Deploy nova-compute
+# Deploy Nova-cloud-controller
 bash 01300-deploy-nova-cloud-controller.sh
 juju status "nova*"
 
-# Deploy nova-cloud-controller
+# Deploy Nova-compute
 bash 01400-deploy-nova-compute.sh
 juju status "nova*"
 juju ssh nova-cloud-controller/0 sudo crm status
@@ -324,14 +337,62 @@ ping -c 4 10.0.0.106
 source ~/admin-openrc
 openstack compute service list
 
+# Deploy Neutron
+bash 01500-deploy-neutron.sh
+juju status "neutron*"
+juju ssh neutron-api/0 sudo crm status
+juju ssh neutron-api/0 ip address show
+# IP address: 10.0.0.107
+ping -c 4 10.0.0.107
+source ~/admin-openrc
+openstack extension list --network
+openstack network agent list
+juju ssh neutron-gateway/0 sudo ovs-vsctl show
+juju ssh nova-compute/0 sudo ovs-vsctl show
+juju ssh neutron-gateway/0 ip link show
+juju ssh nova-compute/0 ip link show
+
+# Deploy openstack-dashboard (Horizon)
+bash 01600-deploy-openstack-dashboard.sh
+juju status "openstack-dashboard"
+juju ssh openstack-dashboard/0 sudo crm status
+juju ssh openstack-dashboard/0 ip address show
+# IP address: 10.0.0.108
+ping -c 4 10.0.0.108
+# Horizon dashboard
+# http://10.0.0.108/
+# Domain: admin_domain
+# User Name: admin
+# Password: password
+
+# Deploy NTP
+bash 01700-deploy-ntp.sh
+juju status "ntp"
+juju ssh ceph-osd/0 sudo chronyc sources
+juju ssh ceph-osd-backup/0 sudo chronyc sources
+juju ssh nova-compute/0 sudo chronyc sources
+juju ssh neutron-gateway/0 sudo chronyc sources
+
 #juju machines
 #juju status
 juju status --color | more
 
+# Remove application e.g. ceph-radosgw, ceph-radosgw-hacluster
+juju remove-application ceph-radosgw
+juju remove-application ceph-radosgw-hacluster
+
+# Troubleshoot failed services
+# Method 1
+# juju run-action unit/number pause --wait
+# juju run-action unit/number resume --wait
+# Method 2
+# juju ssh unit/number sudo systemctl reboot
+
 # Delete controller and model
 # juju destroy-model openstack -y
 # juju remove-cloud maas-one --client --controller maas-one
-# juju destroy-controller maas-one -y --destroy-all-models
+juju destroy-controller maas-one -y --destroy-all-models --destroy-storage
+# Killall - last effort
 juju kill-controller -y maas-one
 
 # Delete all quests
