@@ -184,8 +184,6 @@ ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
 
 juju clouds --client && juju credentials --client --show-secrets --format yaml
 
-juju controllers && juju status && juju machines
-
 # Deploy Full HA Charmed OpenStack with Ubuntu 18.04 Bionic
 # https://pg1x.com/tech:cloud:openstack:stein:deploy-charmed-openstack-ha-bionic:deploy-charmed-openstack-ha-bionic
 # https://gitlab.pg1x.com/openstack/openstack-lab
@@ -216,6 +214,7 @@ cd /mnt/extra/maas-one/os
 
 # Create Juju Bootstrap Controller
 bash 00200-create-juju-bootstrap-controller.sh
+juju controllers && juju status && juju machines
 
 # Add machines
 bash 00300-add-machines.sh
@@ -391,9 +390,10 @@ juju remove-application ceph-radosgw-hacluster
 # Delete controller and model
 # juju destroy-model openstack -y
 # juju remove-cloud maas-one --client --controller maas-one
-juju destroy-controller maas-one -y --destroy-all-models --destroy-storage
+# juju destroy-controller maas-one -y --destroy-all-models --destroy-storage
+bash 00100-remove-juju-bootstrap-controller.sh
 # Killall - last effort
-juju kill-controller -y maas-one
+# juju kill-controller -y maas-one
 
 # Delete all quests
 cd /mnt/extra/maas-one && ./remove-guests.sh && cd .. && rm -rf maas-one
