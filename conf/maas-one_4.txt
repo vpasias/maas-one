@@ -190,6 +190,9 @@ juju bootstrap --bootstrap-series=bionic --bootstrap-constraints tags=juju maas-
 
 juju controllers && juju status && juju machines
 
+# Deploy Full HA Charmed OpenStack with Ubuntu 18.04 Bionic
+# https://pg1x.com/tech:cloud:openstack:stein:deploy-charmed-openstack-ha-bionic:deploy-charmed-openstack-ha-bionic
+
 #juju machines
 #juju status
 juju status --color | more
