@@ -1,0 +1,210 @@
+chmod +x cloudlab-setup-ubuntu-tl.sh && ./cloudlab-setup-ubuntu-tl.sh && \
+sudo apt-get install libvirt-bin genisoimage libguestfs-tools libosinfo-bin virtinst qemu-kvm git vim net-tools wget curl bash-completion python-pip libvirt-daemon-system virt-manager bridge-utils libnss-libvirt libvirt-clients osinfo-db-tools intltool sshpass htop -y && \
+sudo sed -i 's/hosts:          files dns/hosts:          files libvirt libvirt_guest dns/' /etc/nsswitch.conf && sudo lsmod | grep kvm && sudo reboot
+#sudo systemctl restart libvirtd && sudo systemctl status libvirtd
+
+screen
+# Press Return to continue
+# detach from session without killing it: Ctrl a d 
+# to see screen sessions: screen -ls
+# detach from closed session: screen -d -r 2060.pts-0.node0
+# enter session: screen -r 2060.pts-0.node0
+# exit a session and terminate it: exit
+
+sudo -i
+
+# Create OS node VMs
+cd /mnt/extra && cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && sudo virsh list --all && sudo brctl show && \
+mkdir -p /mnt/extra/virt/images && mkdir -p /mnt/extra/virt/vms && \
+wget -O "/mnt/extra/osinfo-db.tar.xz" https://releases.pagure.org/libosinfo/osinfo-db-20210621.tar.xz && sudo osinfo-db-import --local "/mnt/extra/osinfo-db.tar.xz" && \
+cd /mnt/extra/ && git clone https://github.com/giovtorres/kvm-install-vm.git && cd kvm-install-vm && sudo apt install snapd -y && sudo snap install juju --classic
+
+###########################################################################################################################################################################################
+################################## MAAS One (https://github.com/vpasias/maas-one) ###############################################
+###########################################################################################################################################################################################
+
+nano vm_deployment.sh
+
+#!/bin/bash
+#
+
+virsh net-destroy default && virsh net-undefine default
+
+cat > /mnt/extra/net-external.xml <<EOF
+<network>
+  <name>external</name>
+  <uuid>790274ec-2590-4854-b432-ea7d22deb667</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:c9:86:40'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+      <host mac='52:54:00:01:01:01' ip='192.168.122.2' />
+    </dhcp>
+  </ip>
+</network>
+EOF
+
+cat > /mnt/extra/net-internal.xml <<EOF
+<network>
+  <name>internal</name>
+  <uuid>790274ec-2590-4854-b432-ea7d22deb668</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0' macTableManager='kernel'/>
+  <mac address='52:54:00:c9:86:41'/>
+  <ip address='10.0.0.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+EOF
+
+virsh net-define /mnt/extra/net-internal.xml && virsh net-autostart internal && virsh net-start internal
+virsh net-define /mnt/extra/net-external.xml && virsh net-autostart external && virsh net-start external
+
+virsh net-list --all
+
+./kvm-install-vm create -c 4 -m 8192 -d 80 -t ubuntu2004 -f host-passthrough -k /root/.ssh/id_rsa.pub -l /mnt/extra/virt/images -L /mnt/extra/virt/vms -b virbr0 -T US/Eastern -M 52:54:00:01:01:01 maashost
+
+virsh attach-interface --domain maashost --type network --source internal --model virtio --mac 52:54:00:01:01:02 --config --live
+virsh list --all && brctl show && virsh net-list --all
+
+sleep 90
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "uname -a && sudo ip a"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost 'echo "root:gprm8350" | sudo chpasswd'
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost 'echo "ubuntu:kyax7344" | sudo chpasswd'
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo systemctl restart sshd"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo rm -rf /root/.ssh/authorized_keys"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "cat << EOF | sudo tee /etc/modprobe.d/qemu-system-x86.conf
+options kvm_intel nested=1
+EOF"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo rm -rf /etc/netplan/01-netcfg.yaml"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "cat << EOF | sudo tee /etc/netplan/01-netcfg.yaml
+# This file describes the network interfaces available on your system
+# For more information, see netplan(5).
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens3:
+      dhcp4: true
+      match:
+          macaddress: '52:54:00:01:01:01'
+      set-name: ens3
+    ens10:
+      dhcp4: false
+      match:
+          macaddress: '52:54:00:01:01:02'
+      set-name: ens10
+      addresses:
+        - 10.0.0.2/24
+EOF"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo apt update -y && sudo apt upgrade -y && sudo apt install vim git wget net-tools locate jq -y"
+
+#ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-top -y"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo snap install maas-test-db"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo snap install maas --channel=2.9/stable"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo maas init region+rack --maas-url http://10.0.0.2:5240/MAAS --database-uri maas-test-db:///"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo maas createadmin --username admin --password ubuntu --email admin@example.com"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo maas apikey --username admin > ~ubuntu/admin-api-key"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo mkdir -p /var/snap/maas/current/root/.ssh"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo ssh-keygen -q -N '' -f /var/snap/maas/current/root/.ssh/id_rsa"
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo netplan apply"
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost "sudo reboot"
+#
+
+chmod +x vm_deployment.sh && ./vm_deployment.sh
+
+cd .. && git clone https://github.com/vpasias/maas-one.git && cd maas-one
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost uname -a
+
+# Copy locally the admin-api-key file located at directory: /home/ubuntu
+scp -o "StrictHostKeyChecking=no" ubuntu@maashost:admin-api-key /mnt/extra/maas-one
+
+# ls -lah /root/.ssh && sudo chmod 644 /root/.ssh/authorized_keys
+sshpass -p gprm8350 ssh -o "StrictHostKeyChecking=no" root@maashost cat /var/snap/maas/current/root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+# sshpass -p gprm8350 ssh -o "StrictHostKeyChecking=no" root@maashost cat /var/snap/maas/current/root/.ssh/id_rsa.pub | sudo tee -a /root/.ssh/authorized_keys
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost
+cat /sys/module/kvm_intel/parameters/nested && cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l && free -h && df -hT && ip a && lsblk
+sudo snap run --shell maas
+virsh -c qemu+ssh://root@10.0.0.1/system list --all
+exit
+exit
+
+scp -o "StrictHostKeyChecking=no" config-maas.sh config-nodes.sh maas-login.sh ubuntu@maashost:
+
+nc -vz 10.0.0.2 5240
+#Result: Connection to 10.0.0.2 5240 port [tcp/*] succeeded!
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-maas.sh
+
+# 5240 -> 10.0.0.2:5240
+# URL: http://localhost:5240/MAAS/
+
+# Upload local key to maas via its ui
+cat ~/.ssh/id_rsa.pub
+
+#################### Deploy nodes ##########################################################################################
+
+./create-nodes.sh
+# Change to ubuntu 18.04 if required
+# sed -i 's/ubuntu20.04/ubuntu18.04/' create-nodes.sh
+# virsh list --all
+
+ssh -o "StrictHostKeyChecking=no" ubuntu@maashost ./config-nodes.sh
+# check machine status from maas ui
+# Inside the maas host: maas admin nodes read
+# Also: maas admin machines read | jq '.[] | .hostname, .system_id'
+# maas admin machine update $SYSTEM_ID hostname=node1 power_type=virsh power_parameters_power_address=qemu+ssh://root@10.0.0.1/system power_parameters_power_id=node1 >/dev/null
+
+#################### Deploy IaaS ##########################################################################################
+
+./cloud-and-creds.sh
+# For repeating a deployment
+#juju update-credential maas-one maas-one -f /mnt/extra/maas-one/credentials.yaml
+
+juju clouds --client && juju credentials --client --show-secrets --format yaml
+
+# For ubuntu 18.04 deployment
+juju bootstrap --bootstrap-series=bionic --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=bionic openstack
+# For ubuntu 20.04 deployment
+# juju bootstrap --bootstrap-series=focal --bootstrap-constraints tags=juju maas-one maas-one && juju add-model --config default-series=focal openstack
+
+juju controllers && juju status && juju machines
+
+#juju machines
+#juju status
+juju status --color | more
+
+# Delete controller and model
+# juju destroy-model openstack -y
+# juju remove-cloud maas-one --client --controller maas-one
+# juju destroy-controller maas-one -y --destroy-all-models
+juju kill-controller -y maas-one
+
+# Delete all quests
+cd /mnt/extra/maas-one && ./remove-guests.sh && cd .. && rm -rf maas-one
+
+#################### Delete maashost ##########################################################################################
+
+cd /mnt/extra/kvm-install-vm && \
+./kvm-install-vm remove maashost && rm -rf /root/.ssh/known_hosts && touch /root/.ssh/known_hosts && virsh net-destroy internal && rm -rf /mnt/extra/net-internal.xml && virsh net-undefine internal && \
+virsh net-destroy external && rm -rf /mnt/extra/net-external.xml && virsh net-undefine external && sudo virsh list --all && sudo brctl show && sudo virsh net-list --all
