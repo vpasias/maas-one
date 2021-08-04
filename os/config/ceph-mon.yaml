@@ -1,0 +1,6 @@
+ceph-mon:
+  expected-osd-count: 3
+  monitor-count: 3
+  # ceph-authtool /dev/stdout --name=mon. --gen-key
+  monitor-secret: 'AQACsMFeYPKUChAAIaA94CWemo92sLiCteCk3A=='
+  source: cloud:bionic-stein
