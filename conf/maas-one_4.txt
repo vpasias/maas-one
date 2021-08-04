@@ -293,7 +293,36 @@ source ~/admin-openrc
 openstack image list
 
 # Deploy cinder
-...
+bash 01200-deploy-cinder.sh
+juju status "cinder*"
+juju ssh cinder/0 sudo crm status
+juju ssh cinder/1 ip address show
+# IP address: 10.0.0.105
+ping -c 4 10.0.0.105
+source ~/admin-openrc
+openstack volume service list
+
+# Deploy cinder-backup
+bash 01250-deploy-cinder-backup.sh
+juju status "cinder*" "ceph-osd-backup" "ceph-mon-backup"
+source ~/admin-openrc
+openstack volume service list
+juju ssh ceph-mon-backup/0 sudo ceph status
+juju ssh ceph-mon-backup/0 sudo ceph osd status
+
+# Deploy nova-compute
+bash 01300-deploy-nova-cloud-controller.sh
+juju status "nova*"
+
+# Deploy nova-cloud-controller
+bash 01400-deploy-nova-compute.sh
+juju status "nova*"
+juju ssh nova-cloud-controller/0 sudo crm status
+juju ssh nova-cloud-controller/0 ip address show
+# IP address: 10.0.0.106
+ping -c 4 10.0.0.106
+source ~/admin-openrc
+openstack compute service list
 
 #juju machines
 #juju status
