@@ -258,7 +258,7 @@ juju status "keystone"
 juju ssh keystone/0 sudo crm status
 juju ssh keystone/0 ip address show
 # IP address: 10.0.0.102
-ping -c 4 10.0.10.102
+ping -c 4 10.0.0.102
 juju ssh mysql/0 mysql -u root -p"password"
 SHOW DATABASES;
 SHOW TABLES FROM keystone;
@@ -269,6 +269,27 @@ alias openstack="openstack --os-cloud default"
 openstack token issue
 
 # Deploy ceph-radosgw
+bash 01050-deploy-ceph-radosgw.sh
+juju status "ceph*"
+juju ssh ceph-mon/0 sudo ceph status
+juju ssh ceph-mon/0 sudo ceph osd status
+juju ssh ceph-radosgw/0 sudo crm status
+juju ssh ceph-radosgw/1 ip address show
+# IP address: 10.0.0.103
+ping -c 4 10.0.0.103
+source ~/admin-openrc
+swift stat
+openstack container create container1
+
+# Deploy glance (Image Service)
+bash 01100-deploy-glance.sh
+juju status "glance"
+juju ssh glance/0 sudo crm status
+juju ssh glance/0 ip address show
+# IP address: 10.0.0.104
+ping -c 4 10.0.0.104
+source ~/admin-openrc
+openstack image list
 
 #juju machines
 #juju status
