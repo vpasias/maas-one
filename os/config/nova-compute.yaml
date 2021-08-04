@@ -1,0 +1,8 @@
+nova-compute:
+  config-flags: default_ephemeral_format=ext4
+  cpu-mode: custom
+  cpu-model: kvm64
+  enable-live-migration: true
+  enable-resize: true
+  migration-auth-type: ssh
+  openstack-origin: cloud:bionic-stein
