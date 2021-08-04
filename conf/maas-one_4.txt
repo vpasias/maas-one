@@ -192,6 +192,81 @@ juju controllers && juju status && juju machines
 
 # Deploy Full HA Charmed OpenStack with Ubuntu 18.04 Bionic
 # https://pg1x.com/tech:cloud:openstack:stein:deploy-charmed-openstack-ha-bionic:deploy-charmed-openstack-ha-bionic
+# Machine 0: controller1
+# Machine 1: controller2
+# Machine 2: controller3
+# Machine 3: compute1
+# Machine 4: compute2
+# Machine 5: compute3
+# Machine 6: ceph1
+# Machine 7: ceph2
+# Machine 8: ceph3
+# Machine 9: ceph-backup1
+# Machine 10: ceph-backup2
+# Machine 11: ceph-backup3
+# VIP range: 10.0.0.100 - 10.0.0.119
+
+cd /mnt/extra/maas-one/os
+
+# Add machines
+bash 00300-add-machines.sh
+
+juju status && juju machines
+
+# Deploy Ceph OSD
+bash 00400-deploy-ceph-osd.sh
+
+juju status “ceph*”
+
+# Deploy Ceph OSD Backup
+bash 00450-deploy-ceph-osd-backup.sh
+juju status "ceph*backup"
+
+# Deploy Ceph Monitor
+bash 00500-deploy-ceph-mon.sh
+juju status "ceph*"
+
+# Deploy Ceph Monitor Backup
+bash 00550-deploy-ceph-mon-backup.sh
+juju status "ceph*backup"
+
+# Deploy rabbitmq-server
+bash 00700-deploy-rabbitmq-server.sh
+juju status "rabbitmq-server"
+
+# Deploy memcached
+bash 00800-deploy-memcached.sh
+juju status "memcached"
+juju ssh memcached/0
+echo "stats settings" | nc localhost 11211 | head
+
+# Deploy Percona Cluster
+bash 00900-deploy-mysql.sh
+juju status "mysql"
+juju ssh mysql/0 sudo crm status
+juju ssh mysql/1 ip address show
+# IP address: 10.0.0.101
+ping -c 4 10.0.0.101
+juju ssh mysql/1 mysql -u root -p"password"
+show databases;
+select user, host, plugin from mysql.user;
+quit
+
+# Deploy keystone
+bash 01000-deploy-keystone.sh
+juju status "keystone"
+juju ssh keystone/0 sudo crm status
+juju ssh keystone/0 ip address show
+# IP address: 10.0.0.102
+ping -c 4 10.0.10.102
+juju ssh mysql/0 mysql -u root -p"password"
+SHOW DATABASES;
+SHOW TABLES FROM keystone;
+quit
+source ~/admin-openrc
+openstack --os-cloud default token issue
+alias openstack="openstack --os-cloud default"
+openstack token issue
 
 #juju machines
 #juju status
