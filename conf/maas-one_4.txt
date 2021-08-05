@@ -201,6 +201,9 @@ juju clouds --client && juju credentials --client --show-secrets --format yaml
 # Machine 11: ceph-backup3
 # VIP range: 10.0.0.100 - 10.0.0.119
 
+cd /mnt/extra/maas-one/os
+
+# Install openstack & swift clients
 source venv/bin/activate
 python -V
 pip install wheel
@@ -209,8 +212,6 @@ pip install python-swiftclient
 pip freeze >requirements.txt
 openstack --version
 deactivate
-
-cd /mnt/extra/maas-one/os
 
 # Create Juju Bootstrap Controller
 bash 00200-create-juju-bootstrap-controller.sh
