@@ -9,7 +9,7 @@ Environment summary:
 * KVM guests residing on the KVM host:
      * 1 for the MAAS host itself
      * 1 for the Juju controller
-     * 4-12 for the MAAS nodes (available for deployments)
+     * 4-13 for the MAAS nodes (available for deployments)
 
 * 2 libvirt networks:
      * 'external' for the external side of the MAAS host
