@@ -26,7 +26,7 @@ virt-install \
 # The usable MAAS nodes
 
 VCPUS=4
-RAM_SIZE_MB=24576
+RAM_SIZE_MB=26624
 DISK_SIZE_GB_1=120
 DISK_SIZE_GB_2=30
 DISK_SIZE_GB_3=30
@@ -81,7 +81,11 @@ for NAME in node1 node2 node3 node4 node5; do
         node12)
           MAC1="52:54:00:03:0C:01"
           MAC2="52:54:00:03:0C:02"          
-          ;;            
+          ;;
+        node13)
+          MAC1="52:54:00:03:0D:01"
+          MAC2="52:54:00:03:0D:02"          
+          ;;  
         esac
 
         virt-install \
