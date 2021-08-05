@@ -372,6 +372,18 @@ juju ssh ceph-osd-backup/0 sudo chronyc sources
 juju ssh nova-compute/0 sudo chronyc sources
 juju ssh neutron-gateway/0 sudo chronyc sources
 
+# Optional. Deploy Nagios
+bash 01800-deploy-nagios.sh
+juju status "nagios" "nrpe"
+juju ssh nagios/0 sudo chronyc sources
+_nagios_ip=$(juju run --unit nagios/leader 'unit-get private-address')
+echo "http://${_nagios_ip}/"
+# Nagios dashboard
+# _nagios_ip=10.0.0.200
+# http://10.0.0.200/
+# ID: admin
+# PASSWORD: password
+
 #juju machines
 #juju status
 juju status --color | more
@@ -382,9 +394,11 @@ juju remove-application ceph-radosgw-hacluster
 
 # Troubleshoot failed services
 # Method 1
-# juju run-action unit/number pause --wait
 # juju run-action unit/number resume --wait
 # Method 2
+# juju run-action unit/number pause --wait
+# juju run-action unit/number resume --wait
+# Method 3
 # juju ssh unit/number sudo systemctl reboot
 
 # Delete controller and model
