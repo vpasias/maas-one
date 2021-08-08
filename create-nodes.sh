@@ -31,7 +31,7 @@ DISK_SIZE_GB_1=120
 DISK_SIZE_GB_2=30
 DISK_SIZE_GB_3=30
 
-for NAME in node1 node2 node3 node4 node5; do
+for NAME in node1 node2 node3 node4 node5 node6 node7 node8 node9 node10 node11 node12 node13; do
 
         case $NAME in
         node1)
