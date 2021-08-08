@@ -1,5 +1,5 @@
 neutron-gateway:
-  data-port: br-ex:ens10
+  data-port: br-ex:ens4
   bridge-mappings: physnet1:br-ex
   openstack-origin: cloud:bionic-stein
 neutron-api:
