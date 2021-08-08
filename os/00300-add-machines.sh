@@ -11,3 +11,4 @@ juju add-machine node9.maas
 juju add-machine node10.maas
 juju add-machine node11.maas
 juju add-machine node12.maas
+juju add-machine node13.maas
