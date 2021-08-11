@@ -112,7 +112,13 @@ relations:
 - - openstack-dashboard:shared-db
   - mysql:shared-db
 - - openstack-dashboard:identity-service
-  - keystone:identity-service 
+  - keystone:identity-service
+- - ceph-radosgw:mon
+  - ceph-mon:radosgw
+- - ceph-radosgw:ha
+  - ceph-radosgw-hacluster:ha
+- - ceph-radosgw:identity-service
+  - keystone:identity-service  
 series: bionic
 services:
   memcached:
@@ -151,6 +157,25 @@ services:
     - '1'
     - '2'
     - '3'
+  ceph-radosgw:
+    annotations:
+      gui-x: '1000'
+      gui-y: '1000'
+    charm: cs:~openstack-charmers-next/ceph-radosgw
+    num_units: 3
+    to:
+    - lxd:1
+    - lxd:2
+    - lxd:3
+    options:
+      namespace-tenants: true
+      source: *openstack-origin
+      vip: 10.0.0.103
+  ceph-radosgw-hacluster:
+    charm: cs:~openstack-charmers-next/hacluster
+    options:
+      cluster_count: 3
+      corosync_transport: unicast   
   cinder:
     annotations:
       gui-x: '750'
