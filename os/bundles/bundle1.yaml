@@ -107,6 +107,12 @@ relations:
   - mysql-hacluster:ha
 - - nova-cloud-controller:memcache
   - memcached:cache
+- - openstack-dashboard:ha
+  - openstack-dashboard-hacluster:ha
+- - openstack-dashboard:shared-db
+  - mysql:shared-db
+- - openstack-dashboard:identity-service
+  - keystone:identity-service 
 series: bionic
 services:
   memcached:
@@ -282,7 +288,7 @@ services:
       gui-x: '0'
       gui-y: '0'
     charm: cs:~openstack-charmers-next/neutron-gateway
-    num_units: 1
+    num_units: 3
     options:
       openstack-origin: *openstack-origin
       bridge-mappings: physnet1:br-ex
@@ -290,6 +296,8 @@ services:
       worker-multiplier: *worker-multiplier
     to:
     - '0'
+    - '1'  
+    - '2'    
   neutron-openvswitch:
     annotations:
       gui-x: '250'
@@ -306,6 +314,9 @@ services:
       openstack-origin: *openstack-origin
       network-manager: Neutron
       worker-multiplier: *worker-multiplier
+      console-access-protocol: spice
+      console-proxy-ip: 10.0.0.106
+      vip: 10.0.0.106     
     to:
     - 'lxd:1'
     - 'lxd:2'
@@ -323,6 +334,8 @@ services:
     num_units: 3
     options:
       config-flags: default_ephemeral_format=ext4
+      cpu-mode: custom
+      cpu-model: kvm64
       openstack-origin: *openstack-origin
       enable-live-migration: true
       enable-resize: true
@@ -337,13 +350,38 @@ services:
       gui-y: '0'
     charm: cs:ntp
     num_units: 0
+    options:
+      pools: 0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org    
+  openstack-dashboard:
+    annotations:
+      gui-x: '750'
+      gui-y: '750'
+    charm: cs:~openstack-charmers-next/openstack-dashboard
+    num_units: 3
+    to:
+    - lxd:0
+    - lxd:1
+    - lxd:2
+    options:
+      cinder-backup: true
+      openstack-origin: *openstack-origin
+      vip: 10.0.0.108
+      webroot: /
+  openstack-dashboard-hacluster:
+    charm: cs:~openstack-charmers-next/hacluster
+    options:
+      cluster_count: 3
+      corosync_transport: unicast
   rabbitmq-server:
     annotations:
       gui-x: '500'
       gui-y: '250'
     charm: cs:~openstack-charmers-next/rabbitmq-server
-    num_units: 1
+    num_units: 3
     options:
       source: *openstack-origin
     to:
     - 'lxd:0'
+    - 'lxd:1'
+    - 'lxd:2'
+
