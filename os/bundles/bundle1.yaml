@@ -1,4 +1,4 @@
-# *** Masakari HA bundle ***
+# *** HCI HA bundle ***
 variables:
   openstack-origin:    &openstack-origin     cloud:bionic-ussuri
   data-port:           &data-port            br-ex:ens4
@@ -118,7 +118,7 @@ relations:
 - - ceph-radosgw:ha
   - ceph-radosgw-hacluster:ha
 - - ceph-radosgw:identity-service
-  - keystone:identity-service  
+  - keystone:identity-service
 series: bionic
 services:
   memcached:
@@ -189,9 +189,9 @@ services:
       glance-api-version: 2
       vip: 10.0.0.105   
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   cinder-ceph:
     annotations:
       gui-x: '750'
@@ -214,9 +214,9 @@ services:
       worker-multiplier: *worker-multiplier
       vip: 10.0.0.104      
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   glance-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
@@ -233,9 +233,9 @@ services:
       worker-multiplier: *worker-multiplier
       vip: 10.0.0.102
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   keystone-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
@@ -255,9 +255,9 @@ services:
       root-password: password
       vip: 10.0.0.101     
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   mysql-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
@@ -274,9 +274,9 @@ services:
       openstack-origin: *openstack-origin
       vip: 10.0.0.109    
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   placement-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
@@ -300,9 +300,9 @@ services:
       overlay-network-type: vxlan
       vip: 10.0.0.107      
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   neutron-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
@@ -320,9 +320,9 @@ services:
       data-port: *data-port
       worker-multiplier: *worker-multiplier
     to:
-    - '0'
-    - '1'  
-    - '2'    
+    - '1'
+    - '2'  
+    - '3'    
   neutron-openvswitch:
     annotations:
       gui-x: '250'
@@ -343,9 +343,9 @@ services:
       console-proxy-ip: 10.0.0.106
       vip: 10.0.0.106     
     to:
+    - 'lxd:0'
     - 'lxd:1'
     - 'lxd:2'
-    - 'lxd:3'
   nova-cc-hacluster:
     charm: cs:~openstack-charmers-next/hacluster
     options:
