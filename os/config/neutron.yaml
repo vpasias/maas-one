@@ -4,6 +4,7 @@ neutron-gateway:
   #openstack-origin: cloud:bionic-stein
   openstack-origin: cloud:bionic-ussuri
 neutron-api:
+  manage-neutron-plugin-legacy-mode: true
   default-tenant-network-type: vxlan
   enable-l3ha: true
   flat-network-providers: physnet1
