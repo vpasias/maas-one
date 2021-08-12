@@ -1,5 +1,6 @@
 ceph-radosgw:
-  source: cloud:bionic-stein
+  #source: cloud:bionic-stein
+  source: cloud:bionic-ussuri
   namespace-tenants: true
   vip: 10.0.0.103
 ceph-radosgw-hacluster:
