@@ -1,7 +1,10 @@
 #!/bin/bash
-juju deploy --config config/cinder.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:cinder cinder
-juju deploy --config config/cinder.yaml cs:hacluster cinder-hacluster
-juju deploy cs:cinder-ceph cinder-ceph
+#juju deploy --config config/cinder.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:cinder cinder
+#juju deploy --config config/cinder.yaml cs:hacluster cinder-hacluster
+#juju deploy cs:cinder-ceph cinder-ceph
+juju deploy --config config/cinder.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:~openstack-charmers-next/cinder cinder
+juju deploy --config config/cinder.yaml cs:~openstack-charmers-next/hacluster cinder-hacluster
+juju deploy cs:~openstack-charmers-next/cinder-ceph cinder-ceph
 juju add-relation cinder:ha cinder-hacluster:ha
 #
 juju add-relation cinder:shared-db mysql:shared-db
