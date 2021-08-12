@@ -5,4 +5,5 @@ nova-compute:
   enable-live-migration: true
   enable-resize: true
   migration-auth-type: ssh
-  openstack-origin: cloud:bionic-stein
+  #openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri  
