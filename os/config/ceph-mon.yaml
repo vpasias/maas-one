@@ -3,4 +3,5 @@ ceph-mon:
   monitor-count: 3
   # ceph-authtool /dev/stdout --name=mon. --gen-key
   monitor-secret: 'AQACsMFeYPKUChAAIaA94CWemo92sLiCteCk3A=='
-  source: cloud:bionic-stein
+  # source: cloud:bionic-stein
+  source: cloud:bionic-ussuri
