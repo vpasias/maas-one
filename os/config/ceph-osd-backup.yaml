@@ -1,4 +1,4 @@
 ceph-osd-backup:
   osd-devices: /dev/vdb
-#  source: cloud:bionic-stein
+  # source: cloud:bionic-stein
   source: cloud:bionic-ussuri
