@@ -29,5 +29,5 @@ juju add-relation nrpe:nrpe-external-master ntp:nrpe-external-master
 juju add-relation nrpe:nrpe-external-master openstack-dashboard:nrpe-external-master
 juju add-relation nrpe:nrpe-external-master openstack-dashboard-hacluster:nrpe-external-master
 juju add-relation nrpe:nrpe-external-master rabbitmq-server:nrpe-external-master
-juju add-relation nrpe:nrpe-external-master placement:nrpe-external-master
+#juju add-relation nrpe:nrpe-external-master placement:nrpe-external-master
 juju add-relation nrpe:nrpe-external-master placement-hacluster:nrpe-external-master
