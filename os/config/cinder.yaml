@@ -1,7 +1,8 @@
 cinder:
   block-device: None
   glance-api-version: 2
-  openstack-origin: cloud:bionic-stein
+  #openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri 
   vip: 10.0.0.105
 cinder-hacluster:
   corosync_transport: unicast
