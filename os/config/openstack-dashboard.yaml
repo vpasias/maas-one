@@ -1,7 +1,8 @@
 openstack-dashboard:
   cinder-backup: true
   webroot: /
-  openstack-origin: cloud:bionic-stein
+  #openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri
   vip: 10.0.0.108
 openstack-dashboard-hacluster:
   corosync_transport: unicast
