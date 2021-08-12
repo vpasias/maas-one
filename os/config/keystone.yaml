@@ -1,6 +1,7 @@
 keystone:
   admin-password: password
-  openstack-origin: cloud:bionic-stein
+  # openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri
   vip: 10.0.0.102
 keystone-hacluster:
   corosync_transport: unicast
