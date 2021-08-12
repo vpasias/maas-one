@@ -1,14 +1,16 @@
 neutron-gateway:
   data-port: br-ex:ens4
   bridge-mappings: physnet1:br-ex
-  openstack-origin: cloud:bionic-stein
+  #openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri
 neutron-api:
   default-tenant-network-type: vxlan
   enable-l3ha: true
   flat-network-providers: physnet1
   max-l3-agents-per-router: 3
   neutron-security-groups: true
-  openstack-origin: cloud:bionic-stein
+  #openstack-origin: cloud:bionic-stein
+  openstack-origin: cloud:bionic-ussuri
   overlay-network-type: vxlan
   vip: 10.0.0.107
 neutron-hacluster:
