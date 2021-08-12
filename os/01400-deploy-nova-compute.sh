@@ -1,5 +1,6 @@
 #!/bin/bash
-juju deploy --config config/nova-compute.yaml -n 3 --to 3,4,5 cs:nova-compute nova-compute
+#juju deploy --config config/nova-compute.yaml -n 3 --to 3,4,5 cs:nova-compute nova-compute
+juju deploy --config config/nova-compute.yaml -n 3 --to 3,4,5 cs:~openstack-charmers-next/nova-compute nova-compute
 #
 juju add-relation nova-compute:cloud-compute nova-cloud-controller:cloud-compute
 juju add-relation nova-compute:amqp rabbitmq-server:amqp
