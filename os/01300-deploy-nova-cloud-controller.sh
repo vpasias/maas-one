@@ -1,6 +1,8 @@
 #!/bin/bash
-juju deploy --config config/nova-cloud-controller.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:nova-cloud-controller nova-cloud-controller
-juju deploy --config config/nova-cloud-controller.yaml cs:hacluster ncc-hacluster
+#juju deploy --config config/nova-cloud-controller.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:nova-cloud-controller nova-cloud-controller
+#juju deploy --config config/nova-cloud-controller.yaml cs:hacluster ncc-hacluster
+juju deploy --config config/nova-cloud-controller.yaml -n 3 --to lxd:0,lxd:1,lxd:2 cs:~openstack-charmers-next/nova-cloud-controller nova-cloud-controller
+juju deploy --config config/nova-cloud-controller.yaml cs:~openstack-charmers-next/hacluster ncc-hacluster
 juju add-relation nova-cloud-controller:ha ncc-hacluster:ha
 #
 juju add-relation nova-cloud-controller:shared-db mysql:shared-db
