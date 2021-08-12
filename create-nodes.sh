@@ -52,7 +52,7 @@ for NAME in node1 node2 node3 node4 node5 node6 node7 node8 node9 node10 node11 
           ;;
         node5)
           MAC1="52:54:00:03:05:01"
-          MAC2="52:54:00:03:05:02"          
+          MAC2="52:54:00:03:05:02"
           ;;
         node6)
           MAC1="52:54:00:03:06:01"
@@ -72,7 +72,7 @@ for NAME in node1 node2 node3 node4 node5 node6 node7 node8 node9 node10 node11 
           ;;
         node10)
           MAC1="52:54:00:03:0A:01"
-          MAC2="52:54:00:03:0A:02"          
+          MAC2="52:54:00:03:0A:02"
           ;;
         node11)
           MAC1="52:54:00:03:0B:01"
@@ -80,12 +80,12 @@ for NAME in node1 node2 node3 node4 node5 node6 node7 node8 node9 node10 node11 
           ;;
         node12)
           MAC1="52:54:00:03:0C:01"
-          MAC2="52:54:00:03:0C:02"          
+          MAC2="52:54:00:03:0C:02"
           ;;
         node13)
           MAC1="52:54:00:03:0D:01"
-          MAC2="52:54:00:03:0D:02"          
-          ;;  
+          MAC2="52:54:00:03:0D:02"
+          ;;
         esac
 
         virt-install \
