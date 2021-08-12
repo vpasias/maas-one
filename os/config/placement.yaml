@@ -1,0 +1,5 @@
+placement:
+  openstack-origin: cloud:bionic-ussuri 
+  vip: 10.0.0.109
+placement-hacluster:
+  corosync_transport: unicast
